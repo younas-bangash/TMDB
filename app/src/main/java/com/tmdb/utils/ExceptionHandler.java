@@ -48,6 +48,6 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     public void uncaughtException(Thread thread, Throwable exception) {
         final StringWriter stackTrace = new StringWriter();
         exception.printStackTrace(new PrintWriter(stackTrace));
-        Log.e("Error",stackTrace.toString());
+        Logger.e(stackTrace.toString());
     }
 }
