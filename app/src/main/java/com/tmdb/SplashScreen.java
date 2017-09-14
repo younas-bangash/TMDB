@@ -1,5 +1,6 @@
 package com.tmdb;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +19,8 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-
+                startActivity(new Intent(SplashScreen.this,MainScreenActivity.class));
+                finish();
             }
         }, 3000);
     }
