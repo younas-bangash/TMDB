@@ -48,7 +48,7 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
         return new ViewHolder(fragmentItemBinding);
     }
 
-    public void loadMoviePoster(String posterUrl){
+    private void loadMoviePoster(String posterUrl){
         fragmentItemBinding.posterImageView.getHierarchy().setProgressBarImage(
                 new CircleProgressDrawable());
         fragmentItemBinding.posterImageView.setImageURI(posterUrl);

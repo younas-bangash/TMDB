@@ -10,30 +10,21 @@ import java.util.List;
  */
 
 public class MovieDetails {
-    @SerializedName("adult")
+    @SerializedName("original_title")
     @Expose
-    public String adult;
-    @SerializedName("backdrop_path")
+    public String original_title;
+    @SerializedName("vote_count")
     @Expose
-    public String backdropPath;
-    @SerializedName("genre_ids")
-    @Expose
-    public List<String> genreIds = null;
+    public String vote_count;
     @SerializedName("id")
     @Expose
     public String id;
-    @SerializedName("original_language")
+    @SerializedName("video")
     @Expose
-    public String originalLanguage;
-    @SerializedName("original_title")
+    public String video;
+    @SerializedName("vote_average")
     @Expose
-    public String originalTitle;
-    @SerializedName("overview")
-    @Expose
-    public String overview;
-    @SerializedName("release_date")
-    @Expose
-    public String releaseDate;
+    public String voteAverage;
     @SerializedName("poster_path")
     @Expose
     public String posterPath;
@@ -43,14 +34,26 @@ public class MovieDetails {
     @SerializedName("title")
     @Expose
     public String title;
-    @SerializedName("video")
+    @SerializedName("original_language")
     @Expose
-    public String video;
-    @SerializedName("vote_average")
+    public String originalLanguage;
+    @SerializedName("genre_ids")
     @Expose
-    public String voteAverage;
-    @SerializedName("vote_count")
+    public List<String> genreIds = null;
+    @SerializedName("backdrop_path")
     @Expose
-    public String voteCount;
+    public String backdrop_path;
+    @SerializedName("adult")
+    @Expose
+    public String adult;
+    @SerializedName("overview")
+    @Expose
+    public String overview;
+    @SerializedName("release_date")
+    @Expose
+    public String releaseDate;
+
+
+
 
 }

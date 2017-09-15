@@ -70,7 +70,7 @@ public class MovieFragment extends Fragment {
     private void getResults() {
         RetrofitBuilder retrofit = new RetrofitBuilder();
         final RetrofitInterface service = retrofit.mApi;
-        service.getAllMovies(API_KEY,language,include_adult,sort_by)
+        service.getNowPlayingMovies(API_KEY)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Movies>() {

@@ -1,5 +1,6 @@
 package com.tmdb;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -114,6 +115,10 @@ public class MainScreenActivity extends AppCompatActivity implements
 
     @Override
     public void onMovieClick(MovieDetails item) {
-
+        Intent intent = new Intent(this,MovieDetailActivity.class);
+        intent.putExtra("posterLink",item.backdrop_path);
+        intent.putExtra("title",item.original_title);
+        intent.putExtra("id",item.id);
+        startActivity(intent);
     }
 }

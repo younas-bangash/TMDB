@@ -13,10 +13,9 @@ import rx.Observable;
  */
 
 public interface RetrofitInterface {
-    @GET("3/genre/878/movies?")
-    Observable<Movies> getAllMovies(@Query("api_key") String api_key,
-                                    @Query("language") String language,
-                                    @Query("include_adult") String include_adult,
-                                    @Query("sort_by") String sort_by);
+    @GET("3/movie/now_playing?")
+    Observable<Movies> getNowPlayingMovies(@Query("api_key") String api_key);
+
+    // https://api.themoviedb.org/3/movie/118340?api_key=f7caf4a40a5accddacdad05cb1cdb792
 
 }

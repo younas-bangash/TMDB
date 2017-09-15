@@ -27,6 +27,10 @@
         <activity
             android:name=".MainScreenActivity"
             android:label="@string/title_activity_main_screen"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MovieDetailActivity"
+            android:label="@string/title_activity_movie_detail"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
