@@ -25,6 +25,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.tmdb.utils.Constant.API_KEY;
 import static com.tmdb.utils.Constant.NOW_PLAYING_QUERY;
 import static com.tmdb.utils.Constant.POPULAR_MOVIE_QUERY;
 import static com.tmdb.utils.Constant.TOP_RATED_MOVIES;
@@ -37,8 +38,6 @@ import static com.tmdb.utils.Constant.UP_COMING_MOVIES;
  * interface.
  */
 public class MovieFragment extends Fragment {
-
-    private static final String API_KEY = "f7caf4a40a5accddacdad05cb1cdb792";
     private List<MovieDetails> movieDetailses = new ArrayList<>();
     private OnMovieClickListner mListener;
     private int movieQuery;

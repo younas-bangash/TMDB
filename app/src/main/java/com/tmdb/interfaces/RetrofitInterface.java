@@ -31,4 +31,11 @@ public interface RetrofitInterface {
     Observable<MoviesCompleteDetails> getMovieFullDetails(
             @Path("movieID") String movieID, @Query("api_key") String api_key);
 
+    @GET("3/search/movie?")
+    Observable<Movies> searchMovie(@Query("api_key") String api_key,
+                                   @Query("query") String query);
+
+
+    //https://api.themoviedb.org/3/search/movie?api_key=f7caf4a40a5accddacdad05cb1cdb792&query=temp&page=1
+
 }

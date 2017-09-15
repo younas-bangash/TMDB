@@ -8,24 +8,36 @@
         android:layout_height="match_parent"
         tools:context="com.tmdb.MainScreenActivity">
 
-        <android.support.design.widget.AppBarLayout
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:layout_height="match_parent"
+            tools:context="com.tmdb.MainScreenActivity">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.AppBarOverlay">
 
-        </android.support.design.widget.AppBarLayout>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />
+            </android.support.design.widget.AppBarLayout>
 
-        <include
-            layout="@layout/content_main_screen"
-            android:id="@+id/content_main_screen"/>
+            <include
+                android:id="@+id/content_main_screen"
+                layout="@layout/content_main_screen" />
+        </android.support.design.widget.CoordinatorLayout>
 
+        <com.lapism.searchview.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            app:search_version="menu_item"
+            app:search_voice="false"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.lapism.searchview.SearchBehavior" />
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>
