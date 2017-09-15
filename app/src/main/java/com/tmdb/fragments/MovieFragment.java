@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tmdb.MainScreenActivity;
 import com.tmdb.R;
 import com.tmdb.databinding.FragmentItemListBinding;
 import com.tmdb.interfaces.OnMovieClickListner;
@@ -24,6 +25,9 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.tmdb.utils.Constant.NOW_PLAYING_QUERY;
+import static com.tmdb.utils.Constant.POPULAR_MOVIE_QUERY;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -32,13 +36,10 @@ import rx.schedulers.Schedulers;
  */
 public class MovieFragment extends Fragment {
 
-
     private static final String API_KEY = "f7caf4a40a5accddacdad05cb1cdb792";
-    private static final String language = "en-US";
-    private static final String include_adult = "false";
-    private static final String sort_by = "created_at.desc";
     private List<MovieDetails> movieDetailses = new ArrayList<>();
     private OnMovieClickListner mListener;
+    private int movieQuery;
     private FragmentItemListBinding fragmentItemListBinding;
 
     /**
@@ -49,9 +50,10 @@ public class MovieFragment extends Fragment {
     }
 
     @SuppressWarnings("unused")
-    public static MovieFragment newInstance() {
+    public static MovieFragment newInstance(int movieQuery) {
         MovieFragment fragment = new MovieFragment();
         Bundle args = new Bundle();
+        args.putInt("movieQuery",movieQuery);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,18 +61,46 @@ public class MovieFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
-//            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            movieQuery = getArguments().getInt("movieQuery");
         }
-
-
     }
 
-    private void getResults() {
+
+    private void getNowPlayingMovies() {
+        movieDetailses.clear();
         RetrofitBuilder retrofit = new RetrofitBuilder();
         final RetrofitInterface service = retrofit.mApi;
         service.getNowPlayingMovies(API_KEY)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Movies>() {
+                    @Override
+                    public void onCompleted() {
+                        fragmentItemListBinding.list.setLayoutManager(
+                                new GridLayoutManager(getActivity().getApplicationContext(), 2));
+                        fragmentItemListBinding.list.setAdapter(
+                                new RViewAdapter(movieDetailses, mListener));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Movies movies) {
+                        movieDetailses.addAll(movies.results);
+                    }
+                });
+
+    }
+
+    private void getPopluarMovies() {
+        movieDetailses.clear();
+        RetrofitBuilder retrofit = new RetrofitBuilder();
+        final RetrofitInterface service = retrofit.mApi;
+        service.getPopluarMovies(API_KEY)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Movies>() {
@@ -101,8 +131,21 @@ public class MovieFragment extends Fragment {
         if(fragmentItemListBinding == null)
             fragmentItemListBinding = DataBindingUtil.inflate(inflater,
                     R.layout.fragment_item_list, container, false);
+        switch (movieQuery){
+            case NOW_PLAYING_QUERY:
+                ((MainScreenActivity)getActivity()).getSupportActionBar()
+                        .setTitle(getActivity().getString(R.string.now_playing_box_office));
+                getNowPlayingMovies();
+                break;
+            case POPULAR_MOVIE_QUERY:
+                ((MainScreenActivity)getActivity()).getSupportActionBar()
+                        .setTitle(getActivity().getString(R.string.popular_movies));
+                getPopluarMovies();
+                break;
+            default:
+                break;
+        }
 
-        getResults();
 
         return fragmentItemListBinding.getRoot();
     }

@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link MovieDetails} and makes a call to the
  * specified {@link OnMovieClickListner}.
- *
  */
 public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> {
 
@@ -38,7 +37,7 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
     public RViewAdapter(List<MovieDetails> items, OnMovieClickListner listener) {
         movieDetails = items;
         mListener = listener;
-        Logger.d("MoviesArraySize : "+ movieDetails.size());
+        Logger.d("MoviesArraySize : " + movieDetails.size());
     }
 
     @Override
@@ -48,16 +47,16 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
         return new ViewHolder(fragmentItemBinding);
     }
 
-    private void loadMoviePoster(String posterUrl){
+    private void loadMoviePoster(String posterUrl) {
         fragmentItemBinding.posterImageView.getHierarchy().setProgressBarImage(
                 new CircleProgressDrawable());
         fragmentItemBinding.posterImageView.setImageURI(posterUrl);
     }
 
-    public static void loadImageCircle(String url, SimpleDraweeView targetView){
+    public static void loadImageCircle(String url, SimpleDraweeView targetView) {
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
-                        .setProgressiveRenderingEnabled(false)
-                        .build();
+                .setProgressiveRenderingEnabled(false)
+                .build();
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setImageRequest(request)
                 .setAutoPlayAnimations(false)
@@ -74,8 +73,7 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = movieDetails.get(position);
         fragmentItemBinding = holder.getViewDataBinding();
-        Logger.d("PosterImage : "+"http://image.tmdb.org/t/p/w185"+holder.mItem.posterPath);
-        loadMoviePoster(posterUrl+holder.mItem.posterPath);
+        loadMoviePoster(posterUrl + movieDetails.get(position).posterPath);
         fragmentItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +93,7 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public MovieDetails mItem;
+
         public ViewHolder(FragmentItemBinding binding) {
             super(binding.getRoot());
             fragmentItemBinding = binding;

@@ -22,11 +22,15 @@ import com.tmdb.fragments.MovieFragment;
 import com.tmdb.interfaces.OnMovieClickListner;
 import com.tmdb.models.MovieDetails;
 
+import static com.tmdb.utils.Constant.NOW_PLAYING_QUERY;
+import static com.tmdb.utils.Constant.POPULAR_MOVIE_QUERY;
+
 public class MainScreenActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,OnMovieClickListner {
     private ActivityMainScreenBinding activityMainScreenBinding;
     private AppBarMainScreenBinding appBarMainScreenBinding;
     private ContentMainScreenBinding contentMainScreenBinding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,25 +39,27 @@ public class MainScreenActivity extends AppCompatActivity implements
                 this, R.layout.activity_main_screen);
         appBarMainScreenBinding = activityMainScreenBinding.appBarMainScreen;
         contentMainScreenBinding = appBarMainScreenBinding.contentMainScreen;
+        setSupportActionBar(appBarMainScreenBinding.toolbar);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, activityMainScreenBinding.drawerLayout, appBarMainScreenBinding.toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        activityMainScreenBinding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        getSupportFragmentManager().beginTransaction()
-                .detach(MovieFragment.newInstance())
-                .attach(MovieFragment.newInstance())
-                .add(contentMainScreenBinding.container.getId(), MovieFragment.newInstance())
-                .commitNow();
+        startFragment(NOW_PLAYING_QUERY);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        activityMainScreenBinding.navView.setNavigationItemSelectedListener(this);
+        activityMainScreenBinding.navView.setCheckedItem(R.id.nowPlaying);
+    }
+
+    private void startFragment(int movieQuery) {
+        getSupportFragmentManager().beginTransaction()
+                .detach(MovieFragment.newInstance(movieQuery))
+                .attach(MovieFragment.newInstance(movieQuery))
+                .add(contentMainScreenBinding.container.getId(),
+                        MovieFragment.newInstance(movieQuery))
+                .commitNow();
     }
 
     @Override
@@ -94,19 +100,20 @@ public class MainScreenActivity extends AppCompatActivity implements
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.popular) {
+            startFragment(POPULAR_MOVIE_QUERY);
         }
+// else if (id == R.id.nav_gallery) {
+//
+//        } else if (id == R.id.nav_slideshow) {
+//
+//        } else if (id == R.id.nav_manage) {
+//
+//        } else if (id == R.id.nav_share) {
+//
+//        } else if (id == R.id.nav_send) {
+//
+//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
