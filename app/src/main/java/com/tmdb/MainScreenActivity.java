@@ -18,9 +18,11 @@ import com.tmdb.databinding.ActivityMainScreenBinding;
 import com.tmdb.databinding.AppBarMainScreenBinding;
 import com.tmdb.databinding.ContentMainScreenBinding;
 import com.tmdb.fragments.MovieFragment;
+import com.tmdb.interfaces.OnMovieClickListner;
+import com.tmdb.models.MovieDetails;
 
 public class MainScreenActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener,OnMovieClickListner {
     private ActivityMainScreenBinding activityMainScreenBinding;
     private AppBarMainScreenBinding appBarMainScreenBinding;
     private ContentMainScreenBinding contentMainScreenBinding;
@@ -43,11 +45,11 @@ public class MainScreenActivity extends AppCompatActivity implements
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-//        getSupportFragmentManager().beginTransaction()
-//                .detach(MovieFragment.newInstance())
-//                .attach(MovieFragment.newInstance())
-//                .add(R.id.container, MovieFragment.newInstance())
-//                .commitNow();
+        getSupportFragmentManager().beginTransaction()
+                .detach(MovieFragment.newInstance())
+                .attach(MovieFragment.newInstance())
+                .add(contentMainScreenBinding.container.getId(), MovieFragment.newInstance())
+                .commitNow();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -108,5 +110,10 @@ public class MainScreenActivity extends AppCompatActivity implements
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onMovieClick(MovieDetails item) {
+
     }
 }

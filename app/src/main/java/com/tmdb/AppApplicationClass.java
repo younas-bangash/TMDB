@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.tmdb.utils.ExceptionHandler;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -16,7 +15,6 @@ public class AppApplicationClass extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         Fabric.with(this, new Crashlytics());
         Fresco.initialize(getApplicationContext());
     }

@@ -64,7 +64,7 @@ public class MovieFragment extends Fragment {
 //            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
-        getResults();
+
     }
 
     private void getResults() {
@@ -98,9 +98,12 @@ public class MovieFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if(fragmentItemListBinding == null)
+            fragmentItemListBinding = DataBindingUtil.inflate(inflater,
+                    R.layout.fragment_item_list, container, false);
 
-        fragmentItemListBinding = DataBindingUtil.inflate(inflater,
-                R.layout.fragment_item_list, container, false);
+        getResults();
+
         return fragmentItemListBinding.getRoot();
     }
 

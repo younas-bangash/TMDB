@@ -22,7 +22,8 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <include layout="@layout/content_main_screen"
+        <include
+            layout="@layout/content_main_screen"
             android:id="@+id/content_main_screen"/>
 
 

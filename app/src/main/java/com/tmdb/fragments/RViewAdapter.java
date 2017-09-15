@@ -18,6 +18,7 @@ import com.tmdb.databinding.FragmentItemBinding;
 import com.tmdb.interfaces.OnMovieClickListner;
 import com.tmdb.models.MovieDetails;
 import com.tmdb.utils.CircleProgressDrawable;
+import com.tmdb.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
     public RViewAdapter(List<MovieDetails> items, OnMovieClickListner listener) {
         movieDetails = items;
         mListener = listener;
+        Logger.d("MoviesArraySize : "+ movieDetails.size());
     }
 
     @Override
@@ -72,7 +74,8 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = movieDetails.get(position);
         fragmentItemBinding = holder.getViewDataBinding();
-        loadMoviePoster("http://image.tmdb.org/t/p/w185"+holder.mItem.posterPath);
+        Logger.d("PosterImage : "+"http://image.tmdb.org/t/p/w185"+holder.mItem.posterPath);
+        loadMoviePoster(posterUrl+holder.mItem.posterPath);
         fragmentItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
