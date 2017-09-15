@@ -15,6 +15,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.tmdb.R;
 import com.tmdb.databinding.FragmentItemBinding;
+import com.tmdb.databinding.LoadMoreItemBinding;
 import com.tmdb.interfaces.OnMovieClickListner;
 import com.tmdb.models.MovieDetails;
 import com.tmdb.utils.CircleProgressDrawable;
@@ -29,11 +30,13 @@ import static com.tmdb.utils.Constant.POSTER_URL;
  * {@link RecyclerView.Adapter} that can display a {@link MovieDetails} and makes a call to the
  * specified {@link OnMovieClickListner}.
  */
-public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> {
-
+public class RViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int TOP_POSITION_VIEW_HOLDER = 1;
+    private static final int LOWER_POSITION_VIEW_HOLDER = 2;
     private List<MovieDetails> movieDetails = new ArrayList<>();
     private final OnMovieClickListner mListener;
     private FragmentItemBinding fragmentItemBinding;
+    private LoadMoreItemBinding loadMoreItemBinding;
 
 
     public RViewAdapter(List<MovieDetails> items, OnMovieClickListner listener) {
@@ -42,10 +45,21 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        fragmentItemBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.fragment_item, parent, false);
-        return new ViewHolder(fragmentItemBinding);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+
+        switch (viewType){
+            case TOP_POSITION_VIEW_HOLDER:
+                fragmentItemBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                        R.layout.fragment_item, parent, false);
+                return new ViewHolder(fragmentItemBinding);
+            case LOWER_POSITION_VIEW_HOLDER:
+                loadMoreItemBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                        R.layout.load_more_item, parent, false);
+                return new ViewHolderLowerPosition(loadMoreItemBinding);
+            default:
+                return null;
+        }
     }
 
     private void loadMoviePoster(String posterUrl, SimpleDraweeView simpleDraweeView) {
@@ -70,25 +84,57 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = movieDetails.get(position);
-        fragmentItemBinding = holder.getViewDataBinding();
-        loadMoviePoster(POSTER_URL + movieDetails.get(position).posterPath,holder.simpleDraweeView);
-        fragmentItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onMovieClick(holder.mItem);
-                }
-            }
-        });
+    public int getItemViewType(int position) {
+        if(position < movieDetails.size())
+            return TOP_POSITION_VIEW_HOLDER;
+        else
+            return LOWER_POSITION_VIEW_HOLDER;
+    }
+
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+        switch (holder.getItemViewType()) {
+            case TOP_POSITION_VIEW_HOLDER:
+                final ViewHolder viewHolder = (ViewHolder) holder;
+                viewHolder.mItem = movieDetails.get(position);
+                fragmentItemBinding = viewHolder.getViewDataBinding();
+                loadMoviePoster(POSTER_URL + movieDetails.get(position).posterPath,viewHolder.simpleDraweeView);
+                fragmentItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (null != mListener) {
+                            // Notify the active callbacks interface (the activity, if the
+                            // fragment is attached to one) that an item has been selected.
+                            mListener.onMovieClick(viewHolder.mItem);
+                        }
+                    }
+                });
+
+                break;
+            case LOWER_POSITION_VIEW_HOLDER:
+                final ViewHolderLowerPosition viewHolderLowerPosition =
+                        (ViewHolderLowerPosition) holder;
+                loadMoreItemBinding = viewHolderLowerPosition.getViewDataBinding();
+                loadMoreItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (null != mListener) {
+                            // Notify the active callbacks interface (the activity, if the
+                            // fragment is attached to one) that an item has been selected.
+                            mListener.onLoadMoreClick();
+                        }
+                    }
+                });
+
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
     public int getItemCount() {
-        return movieDetails.size();
+        return movieDetails.size()+1;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -104,6 +150,19 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
 
         public FragmentItemBinding getViewDataBinding() {
             return fragmentItemBinding;
+        }
+    }
+
+    private class ViewHolderLowerPosition extends RecyclerView.ViewHolder {
+
+        public ViewHolderLowerPosition(LoadMoreItemBinding binding) {
+            super(binding.getRoot());
+            loadMoreItemBinding = binding;
+            binding.executePendingBindings();
+        }
+
+        public LoadMoreItemBinding getViewDataBinding() {
+            return loadMoreItemBinding;
         }
     }
 }

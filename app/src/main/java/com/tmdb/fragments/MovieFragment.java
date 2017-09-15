@@ -26,7 +26,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.tmdb.utils.Constant.API_KEY;
+import static com.tmdb.utils.Constant.LANGUAGE;
 import static com.tmdb.utils.Constant.NOW_PLAYING_QUERY;
+import static com.tmdb.utils.Constant.PAGE_NUMBER;
 import static com.tmdb.utils.Constant.POPULAR_MOVIE_QUERY;
 import static com.tmdb.utils.Constant.TOP_RATED_MOVIES;
 import static com.tmdb.utils.Constant.UP_COMING_MOVIES;
@@ -72,7 +74,7 @@ public class MovieFragment extends Fragment {
         movieDetailses.clear();
         RetrofitBuilder retrofit = new RetrofitBuilder();
         final RetrofitInterface service = retrofit.mApi;
-        service.getNowPlayingMovies(API_KEY)
+        service.getNowPlayingMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Movies>() {
@@ -101,7 +103,7 @@ public class MovieFragment extends Fragment {
         movieDetailses.clear();
         RetrofitBuilder retrofit = new RetrofitBuilder();
         final RetrofitInterface service = retrofit.mApi;
-        service.getTopRatedMovies(API_KEY)
+        service.getTopRatedMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Movies>() {
@@ -130,7 +132,7 @@ public class MovieFragment extends Fragment {
         movieDetailses.clear();
         RetrofitBuilder retrofit = new RetrofitBuilder();
         final RetrofitInterface service = retrofit.mApi;
-        service.getPopluarMovies(API_KEY)
+        service.getPopluarMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Movies>() {
@@ -194,7 +196,7 @@ public class MovieFragment extends Fragment {
         movieDetailses.clear();
         RetrofitBuilder retrofit = new RetrofitBuilder();
         final RetrofitInterface service = retrofit.mApi;
-        service.getUpcomingMovies(API_KEY)
+        service.getUpcomingMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Movies>() {

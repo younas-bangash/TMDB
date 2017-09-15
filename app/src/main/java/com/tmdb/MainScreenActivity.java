@@ -25,6 +25,7 @@ import com.tmdb.interfaces.OnMovieClickListner;
 import com.tmdb.interfaces.RetrofitInterface;
 import com.tmdb.models.MovieDetails;
 import com.tmdb.models.Movies;
+import com.tmdb.utils.Logger;
 import com.tmdb.utils.RetrofitBuilder;
 
 import java.util.ArrayList;
@@ -36,7 +37,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.tmdb.utils.Constant.API_KEY;
+import static com.tmdb.utils.Constant.LANGUAGE;
 import static com.tmdb.utils.Constant.NOW_PLAYING_QUERY;
+import static com.tmdb.utils.Constant.PAGE_NUMBER;
 import static com.tmdb.utils.Constant.POPULAR_MOVIE_QUERY;
 import static com.tmdb.utils.Constant.TOP_RATED_MOVIES;
 import static com.tmdb.utils.Constant.UP_COMING_MOVIES;
@@ -47,6 +50,7 @@ public class MainScreenActivity extends AppCompatActivity implements
     private AppBarMainScreenBinding appBarMainScreenBinding;
     private ContentMainScreenBinding contentMainScreenBinding;
     private List<SearchItem> qeryResult = new ArrayList<>();
+    private List<MovieDetails> movieDetailsTemp = new ArrayList<>();
     private SearchAdapter searchAdapter = null;
     private SearchHistoryTable mHistoryDatabase;
 
@@ -71,12 +75,21 @@ public class MainScreenActivity extends AppCompatActivity implements
         activityMainScreenBinding.navView.setCheckedItem(R.id.nowPlaying);
         searchAdapter = new SearchAdapter(this, qeryResult);
         appBarMainScreenBinding.searchView.setAdapter(searchAdapter);
-        appBarMainScreenBinding.searchView.showProgress();
-        searchAdapter.addOnItemClickListener(new SearchAdapter.OnItemClickListener() {
+        searchAdapter.setOnSearchItemClickListener(new SearchAdapter.OnSearchItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
-//                mHistoryDatabase.addItem(new SearchItem(text));
+            public void onSearchItemClick(View view, int position) {
+                TextView textView = view.findViewById(R.id.search_text);
+                String query = textView.getText().toString();
+                mHistoryDatabase.addItem(new SearchItem(query));
                 appBarMainScreenBinding.searchView.close(false);
+
+                Intent intent = new Intent(MainScreenActivity.this, MovieDetailActivity.class);
+                intent.putExtra("posterLink", movieDetailsTemp.get(position).backdrop_path);
+                intent.putExtra("title", query);
+                intent.putExtra("id", movieDetailsTemp.get(position).id);
+                startActivity(intent);
+
+
             }
         });
 
@@ -88,7 +101,7 @@ public class MainScreenActivity extends AppCompatActivity implements
 
         final SearchView mSearchView = appBarMainScreenBinding.searchView;
         if (mSearchView != null) {
-//            mSearchView.setVersionMargins(SearchView.VersionMargins.TOOLBAR_SMALL);
+            mSearchView.setVersionMargins(SearchView.VersionMargins.TOOLBAR_SMALL);
             mSearchView.setHint("search");
             mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -100,6 +113,7 @@ public class MainScreenActivity extends AppCompatActivity implements
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
+                    appBarMainScreenBinding.searchView.showProgress();
                     getMoviesList(newText);
                     return false;
                 }
@@ -107,17 +121,11 @@ public class MainScreenActivity extends AppCompatActivity implements
             mSearchView.setOnOpenCloseListener(new SearchView.OnOpenCloseListener() {
                 @Override
                 public boolean onOpen() {
-//                    if (mFab != null) {
-//                        mFab.hide();
-//                    }
                     return true;
                 }
 
                 @Override
                 public boolean onClose() {
-//                    if (mFab != null && !mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-//                        mFab.show();
-//                    }
                     return true;
                 }
             });
@@ -127,31 +135,34 @@ public class MainScreenActivity extends AppCompatActivity implements
 
     private void getMoviesList(final String query) {
         qeryResult.clear();
+        movieDetailsTemp.clear();
         RetrofitBuilder retrofit = new RetrofitBuilder();
         final RetrofitInterface service = retrofit.mApi;
 
-        service.searchMovie(API_KEY,query)
+        service.searchMovie(API_KEY,query,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())
-                .debounce(400, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Movies>() {
                     @Override
                     public void onCompleted() {
-                        Toast.makeText(MainScreenActivity.this, "oncomplete call", Toast.LENGTH_SHORT).show();
                         appBarMainScreenBinding.searchView.hideProgress();
                         searchAdapter.notifyDataSetChanged();
+                        appBarMainScreenBinding.searchView.setSuggestionsList(qeryResult);
+                        appBarMainScreenBinding.searchView.showSuggestions();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        appBarMainScreenBinding.searchView.hideProgress();
                         e.printStackTrace();
                     }
 
                     @Override
                     public void onNext(Movies movies) {
-                        for (MovieDetails details :
-                                movies.results) {
+                        movieDetailsTemp.addAll(movies.results);
+                        for (MovieDetails details : movies.results) {
                             SearchItem searchItem = new SearchItem(details.original_title);
+                            searchItem.setTag(movies.id);
                             qeryResult.add(searchItem);
                         }
                     }
@@ -169,17 +180,6 @@ public class MainScreenActivity extends AppCompatActivity implements
                 contentMainScreenBinding.container.getId(), searchingFragment).commit();
     }
 
-    private void startFragment(int movieQuery) {
-        getSupportFragmentManager().beginTransaction()
-                .remove(MovieFragment.newInstance(movieQuery)).commit();
-
-        getSupportFragmentManager().beginTransaction()
-                .detach(MovieFragment.newInstance(movieQuery))
-                .attach(MovieFragment.newInstance(movieQuery))
-                .add(contentMainScreenBinding.container.getId(),
-                        MovieFragment.newInstance(movieQuery))
-                .commitNow();
-    }
 
     @Override
     public void onBackPressed() {
@@ -246,8 +246,14 @@ public class MainScreenActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra("posterLink", item.backdrop_path);
         intent.putExtra("title", item.original_title);
+        intent.putExtra("fromMainActivity",true);
         intent.putExtra("id", item.id);
         startActivity(intent);
+    }
+
+    @Override
+    public void onLoadMoreClick() {
+        Toast.makeText(this, "onload more click", Toast.LENGTH_SHORT).show();
     }
 
 }

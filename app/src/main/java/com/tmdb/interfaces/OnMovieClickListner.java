@@ -8,4 +8,5 @@ import com.tmdb.models.MovieDetails;
 
 public interface OnMovieClickListner {
     void onMovieClick(MovieDetails item);
+    void onLoadMoreClick();
 }
