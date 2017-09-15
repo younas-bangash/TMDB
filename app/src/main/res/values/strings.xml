@@ -13,5 +13,6 @@
     <string name="movie_rating">Movie Rating</string>
     <string name="now_playing_box_office">Now Playing (Box Office)</string>
     <string name="popular_movies">Popular Movies</string>
-    <string name="top_movies">Top Movies</string>
+    <string name="top_movies">Top Rated Movies</string>
+    <string name="upcoming_movies">UpComming Movies</string>
 </resources>

@@ -15,11 +15,17 @@ import rx.Observable;
  */
 
 public interface RetrofitInterface {
+    @GET("3/movie/upcoming?")
+    Observable<Movies> getUpcomingMovies(@Query("api_key") String api_key);
+
     @GET("3/movie/now_playing?")
     Observable<Movies> getNowPlayingMovies(@Query("api_key") String api_key);
 
     @GET("3/movie/popular?")
     Observable<Movies> getPopluarMovies(@Query("api_key") String api_key);
+
+    @GET("3/movie/top_rated?")
+    Observable<Movies> getTopRatedMovies(@Query("api_key") String api_key);
 
     @GET("3/movie/{movieID}?")
     Observable<MoviesCompleteDetails> getMovieFullDetails(

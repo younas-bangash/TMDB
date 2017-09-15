@@ -27,6 +27,8 @@ import rx.schedulers.Schedulers;
 
 import static com.tmdb.utils.Constant.NOW_PLAYING_QUERY;
 import static com.tmdb.utils.Constant.POPULAR_MOVIE_QUERY;
+import static com.tmdb.utils.Constant.TOP_RATED_MOVIES;
+import static com.tmdb.utils.Constant.UP_COMING_MOVIES;
 
 /**
  * A fragment representing a list of Items.
@@ -72,6 +74,35 @@ public class MovieFragment extends Fragment {
         RetrofitBuilder retrofit = new RetrofitBuilder();
         final RetrofitInterface service = retrofit.mApi;
         service.getNowPlayingMovies(API_KEY)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Movies>() {
+                    @Override
+                    public void onCompleted() {
+                        fragmentItemListBinding.list.setLayoutManager(
+                                new GridLayoutManager(getActivity().getApplicationContext(), 2));
+                        fragmentItemListBinding.list.setAdapter(
+                                new RViewAdapter(movieDetailses, mListener));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Movies movies) {
+                        movieDetailses.addAll(movies.results);
+                    }
+                });
+
+    }
+
+    private void getTopRatedMovies(){
+        movieDetailses.clear();
+        RetrofitBuilder retrofit = new RetrofitBuilder();
+        final RetrofitInterface service = retrofit.mApi;
+        service.getTopRatedMovies(API_KEY)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Movies>() {
@@ -142,12 +173,51 @@ public class MovieFragment extends Fragment {
                         .setTitle(getActivity().getString(R.string.popular_movies));
                 getPopluarMovies();
                 break;
+            case TOP_RATED_MOVIES:
+                ((MainScreenActivity)getActivity()).getSupportActionBar()
+                        .setTitle(getActivity().getString(R.string.top_movies));
+                getTopRatedMovies();
+                break;
+            case UP_COMING_MOVIES:
+                ((MainScreenActivity)getActivity()).getSupportActionBar()
+                        .setTitle(getActivity().getString(R.string.upcoming_movies));
+                getUpComingMovies();
+                break;
             default:
                 break;
         }
 
 
         return fragmentItemListBinding.getRoot();
+    }
+
+    private void getUpComingMovies() {
+        movieDetailses.clear();
+        RetrofitBuilder retrofit = new RetrofitBuilder();
+        final RetrofitInterface service = retrofit.mApi;
+        service.getUpcomingMovies(API_KEY)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Movies>() {
+                    @Override
+                    public void onCompleted() {
+                        fragmentItemListBinding.list.setLayoutManager(
+                                new GridLayoutManager(getActivity().getApplicationContext(), 2));
+                        fragmentItemListBinding.list.setAdapter(
+                                new RViewAdapter(movieDetailses, mListener));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Movies movies) {
+                        movieDetailses.addAll(movies.results);
+                    }
+                });
+
     }
 
 

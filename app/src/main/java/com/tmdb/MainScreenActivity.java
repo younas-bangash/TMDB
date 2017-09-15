@@ -5,6 +5,9 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +27,8 @@ import com.tmdb.models.MovieDetails;
 
 import static com.tmdb.utils.Constant.NOW_PLAYING_QUERY;
 import static com.tmdb.utils.Constant.POPULAR_MOVIE_QUERY;
+import static com.tmdb.utils.Constant.TOP_RATED_MOVIES;
+import static com.tmdb.utils.Constant.UP_COMING_MOVIES;
 
 public class MainScreenActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,OnMovieClickListner {
@@ -47,13 +52,27 @@ public class MainScreenActivity extends AppCompatActivity implements
         activityMainScreenBinding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        startFragment(NOW_PLAYING_QUERY);
+        updateFragment(NOW_PLAYING_QUERY);
 
         activityMainScreenBinding.navView.setNavigationItemSelectedListener(this);
         activityMainScreenBinding.navView.setCheckedItem(R.id.nowPlaying);
     }
 
+    private void updateFragment(int queryID) {
+        MovieFragment searchingFragment = MovieFragment.newInstance(queryID);
+        if(getSupportFragmentManager().findFragmentById(
+                contentMainScreenBinding.container.getId()) != null) {
+            getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager()
+                    .findFragmentById(contentMainScreenBinding.container.getId())).commit();
+        }
+        getSupportFragmentManager().beginTransaction().replace(
+                contentMainScreenBinding.container.getId(), searchingFragment).commit();
+    }
+
     private void startFragment(int movieQuery) {
+        getSupportFragmentManager().beginTransaction()
+                .remove(MovieFragment.newInstance(movieQuery)).commit();
+
         getSupportFragmentManager().beginTransaction()
                 .detach(MovieFragment.newInstance(movieQuery))
                 .attach(MovieFragment.newInstance(movieQuery))
@@ -99,21 +118,22 @@ public class MainScreenActivity extends AppCompatActivity implements
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.popular) {
-            startFragment(POPULAR_MOVIE_QUERY);
+        switch (id){
+            case R.id.popular:
+                updateFragment(POPULAR_MOVIE_QUERY);
+                break;
+            case R.id.nowPlaying:
+                updateFragment(NOW_PLAYING_QUERY);
+                break;
+            case R.id.top:
+                updateFragment(TOP_RATED_MOVIES);
+                break;
+            case R.id.upcoming:
+                updateFragment(UP_COMING_MOVIES);
+                break;
+            default:
+                break;
         }
-// else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

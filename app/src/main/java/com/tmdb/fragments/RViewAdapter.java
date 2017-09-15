@@ -23,6 +23,8 @@ import com.tmdb.utils.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tmdb.utils.Constant.POSTER_URL;
+
 /**
  * {@link RecyclerView.Adapter} that can display a {@link MovieDetails} and makes a call to the
  * specified {@link OnMovieClickListner}.
@@ -32,12 +34,11 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
     private List<MovieDetails> movieDetails = new ArrayList<>();
     private final OnMovieClickListner mListener;
     private FragmentItemBinding fragmentItemBinding;
-    private String posterUrl = "http://image.tmdb.org/t/p/w185";
+
 
     public RViewAdapter(List<MovieDetails> items, OnMovieClickListner listener) {
         movieDetails = items;
         mListener = listener;
-        Logger.d("MoviesArraySize : " + movieDetails.size());
     }
 
     @Override
@@ -47,10 +48,9 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
         return new ViewHolder(fragmentItemBinding);
     }
 
-    private void loadMoviePoster(String posterUrl) {
-        fragmentItemBinding.posterImageView.getHierarchy().setProgressBarImage(
-                new CircleProgressDrawable());
-        fragmentItemBinding.posterImageView.setImageURI(posterUrl);
+    private void loadMoviePoster(String posterUrl, SimpleDraweeView simpleDraweeView) {
+        simpleDraweeView.getHierarchy().setProgressBarImage(new CircleProgressDrawable());
+        simpleDraweeView.setImageURI(posterUrl);
     }
 
     public static void loadImageCircle(String url, SimpleDraweeView targetView) {
@@ -73,7 +73,7 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = movieDetails.get(position);
         fragmentItemBinding = holder.getViewDataBinding();
-        loadMoviePoster(posterUrl + movieDetails.get(position).posterPath);
+        loadMoviePoster(POSTER_URL + movieDetails.get(position).posterPath,holder.simpleDraweeView);
         fragmentItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,10 +93,12 @@ public class RViewAdapter extends RecyclerView.Adapter<RViewAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public MovieDetails mItem;
+        public SimpleDraweeView simpleDraweeView;
 
         public ViewHolder(FragmentItemBinding binding) {
             super(binding.getRoot());
             fragmentItemBinding = binding;
+            simpleDraweeView = fragmentItemBinding.posterImageView;
             binding.executePendingBindings();
         }
 

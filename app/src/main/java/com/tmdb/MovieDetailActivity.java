@@ -24,11 +24,12 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.tmdb.utils.Constant.API_KEY;
+import static com.tmdb.utils.Constant.BANNER_URL;
+
 public class MovieDetailActivity extends AppCompatActivity {
     private ActivityMovieDetailBinding activityMovieDetailBinding;
     private ContentMovieDetailBinding contentMovieDetailBinding;
-    private String posterUrl = "http://image.tmdb.org/t/p/w500";
-    private static final String API_KEY = "f7caf4a40a5accddacdad05cb1cdb792";
     private String movieID = null;
 
     @Override
@@ -37,9 +38,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         activityMovieDetailBinding =  DataBindingUtil.setContentView(this, R.layout.activity_movie_detail);
         contentMovieDetailBinding = activityMovieDetailBinding.contentMovieDetail;
         setSupportActionBar(activityMovieDetailBinding.toolbar);
+        //noinspection ConstantConditions
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Bundle data = getIntent().getExtras();
         if(data != null){
-            loadMoviePoster(posterUrl+data.getString("posterLink"));
+            loadMoviePoster(BANNER_URL+data.getString("posterLink"));
             getSupportActionBar().setTitle(data.getString("title"));
             movieID = data.getString("id");
         }
