@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lapism.searchview.SearchAdapter;
-import com.lapism.searchview.SearchHistoryTable;
 import com.lapism.searchview.SearchItem;
 import com.lapism.searchview.SearchView;
 import com.tmdb.databinding.ActivityMainScreenBinding;
@@ -25,12 +24,10 @@ import com.tmdb.interfaces.OnMovieClickListner;
 import com.tmdb.interfaces.RetrofitInterface;
 import com.tmdb.models.MovieDetails;
 import com.tmdb.models.Movies;
-import com.tmdb.utils.Logger;
 import com.tmdb.utils.RetrofitBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -52,7 +49,7 @@ public class MainScreenActivity extends AppCompatActivity implements
     private List<SearchItem> qeryResult = new ArrayList<>();
     private List<MovieDetails> movieDetailsTemp = new ArrayList<>();
     private SearchAdapter searchAdapter = null;
-    private SearchHistoryTable mHistoryDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +59,7 @@ public class MainScreenActivity extends AppCompatActivity implements
         appBarMainScreenBinding = activityMainScreenBinding.appBarMainScreen;
         contentMainScreenBinding = appBarMainScreenBinding.contentMainScreen;
         setSupportActionBar(appBarMainScreenBinding.toolbar);
-        mHistoryDatabase = new SearchHistoryTable(this);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, activityMainScreenBinding.drawerLayout, appBarMainScreenBinding.toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -75,18 +72,19 @@ public class MainScreenActivity extends AppCompatActivity implements
         activityMainScreenBinding.navView.setCheckedItem(R.id.nowPlaying);
         searchAdapter = new SearchAdapter(this, qeryResult);
         appBarMainScreenBinding.searchView.setAdapter(searchAdapter);
+
         searchAdapter.setOnSearchItemClickListener(new SearchAdapter.OnSearchItemClickListener() {
             @Override
             public void onSearchItemClick(View view, int position) {
                 TextView textView = view.findViewById(R.id.search_text);
                 String query = textView.getText().toString();
-                mHistoryDatabase.addItem(new SearchItem(query));
+
                 appBarMainScreenBinding.searchView.close(false);
 
                 Intent intent = new Intent(MainScreenActivity.this, MovieDetailActivity.class);
-                intent.putExtra("posterLink", movieDetailsTemp.get(position).backdrop_path);
+                intent.putExtra("posterLink", "");
                 intent.putExtra("title", query);
-                intent.putExtra("id", movieDetailsTemp.get(position).id);
+                intent.putExtra("id", "");
                 startActivity(intent);
 
 
@@ -106,7 +104,6 @@ public class MainScreenActivity extends AppCompatActivity implements
             mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    mHistoryDatabase.addItem(new SearchItem(query));
                     mSearchView.close(false);
                     return true;
                 }
@@ -136,7 +133,7 @@ public class MainScreenActivity extends AppCompatActivity implements
     private void getMoviesList(final String query) {
         qeryResult.clear();
         movieDetailsTemp.clear();
-        RetrofitBuilder retrofit = new RetrofitBuilder();
+        RetrofitBuilder retrofit = new RetrofitBuilder(getApplicationContext());
         final RetrofitInterface service = retrofit.mApi;
 
         service.searchMovie(API_KEY,query,LANGUAGE,PAGE_NUMBER)
@@ -146,7 +143,7 @@ public class MainScreenActivity extends AppCompatActivity implements
                     @Override
                     public void onCompleted() {
                         appBarMainScreenBinding.searchView.hideProgress();
-                        searchAdapter.notifyDataSetChanged();
+//                        searchAdapter.notifyDataSetChanged();
                         appBarMainScreenBinding.searchView.setSuggestionsList(qeryResult);
                         appBarMainScreenBinding.searchView.showSuggestions();
                     }

@@ -43,6 +43,7 @@ public class MovieFragment extends Fragment {
     private List<MovieDetails> movieDetailses = new ArrayList<>();
     private OnMovieClickListner mListener;
     private int movieQuery;
+    private RetrofitBuilder retrofit;
     private FragmentItemListBinding fragmentItemListBinding;
 
     /**
@@ -64,6 +65,7 @@ public class MovieFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        retrofit = new RetrofitBuilder(getActivity().getApplicationContext());
         if (getArguments() != null) {
             movieQuery = getArguments().getInt("movieQuery");
         }
@@ -72,7 +74,6 @@ public class MovieFragment extends Fragment {
 
     private void getNowPlayingMovies() {
         movieDetailses.clear();
-        RetrofitBuilder retrofit = new RetrofitBuilder();
         final RetrofitInterface service = retrofit.mApi;
         service.getNowPlayingMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())
@@ -101,7 +102,6 @@ public class MovieFragment extends Fragment {
 
     private void getTopRatedMovies(){
         movieDetailses.clear();
-        RetrofitBuilder retrofit = new RetrofitBuilder();
         final RetrofitInterface service = retrofit.mApi;
         service.getTopRatedMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())
@@ -130,7 +130,6 @@ public class MovieFragment extends Fragment {
 
     private void getPopluarMovies() {
         movieDetailses.clear();
-        RetrofitBuilder retrofit = new RetrofitBuilder();
         final RetrofitInterface service = retrofit.mApi;
         service.getPopluarMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())
@@ -194,7 +193,7 @@ public class MovieFragment extends Fragment {
 
     private void getUpComingMovies() {
         movieDetailses.clear();
-        RetrofitBuilder retrofit = new RetrofitBuilder();
+
         final RetrofitInterface service = retrofit.mApi;
         service.getUpcomingMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())

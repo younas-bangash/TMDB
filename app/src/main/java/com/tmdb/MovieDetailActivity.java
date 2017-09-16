@@ -1,23 +1,15 @@
 package com.tmdb;
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.tmdb.databinding.ActivityMovieDetailBinding;
 import com.tmdb.databinding.ContentMovieDetailBinding;
-import com.tmdb.fragments.RViewAdapter;
 import com.tmdb.interfaces.RetrofitInterface;
-import com.tmdb.models.Movies;
 import com.tmdb.models.MoviesCompleteDetails;
 import com.tmdb.utils.CircleProgressDrawable;
-import com.tmdb.utils.Logger;
 import com.tmdb.utils.RetrofitBuilder;
 
 import rx.Observer;
@@ -31,6 +23,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private ActivityMovieDetailBinding activityMovieDetailBinding;
     private ContentMovieDetailBinding contentMovieDetailBinding;
     private String movieID = null;
+    private RetrofitBuilder retrofit ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +31,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         activityMovieDetailBinding =  DataBindingUtil.setContentView(this, R.layout.activity_movie_detail);
         contentMovieDetailBinding = activityMovieDetailBinding.contentMovieDetail;
         setSupportActionBar(activityMovieDetailBinding.toolbar);
+        retrofit = new RetrofitBuilder(getApplicationContext());
         //noinspection ConstantConditions
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -53,7 +47,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void getMovieFullDetails(String movieID) {
-        RetrofitBuilder retrofit = new RetrofitBuilder();
+
         final RetrofitInterface service = retrofit.mApi;
         service.getMovieFullDetails(movieID,API_KEY)
                 .subscribeOn(Schedulers.newThread())
