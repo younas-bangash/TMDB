@@ -44,8 +44,12 @@ import static com.tmdb.utils.Constant.UP_COMING_MOVIES;
 public class MovieFragment extends Fragment {
     private List<MovieDetails> movieDetailses = new ArrayList<>();
     private OnMovieClickListner mListener;
+    private int visibleThreshold = 5;
+    private int lastVisibleItem, totalItemCount;
+    private boolean loading;
     private int movieQuery;
     private RetrofitBuilder retrofit;
+    private GridLayoutManager gridLayoutManager;
     private FragmentItemListBinding fragmentItemListBinding;
 
     /**
@@ -72,6 +76,8 @@ public class MovieFragment extends Fragment {
         if (getArguments() != null) {
             movieQuery = getArguments().getInt("movieQuery");
         }
+        gridLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 2);
+
     }
 
 
@@ -84,8 +90,7 @@ public class MovieFragment extends Fragment {
                 .subscribe(new Observer<Movies>() {
                     @Override
                     public void onCompleted() {
-                        fragmentItemListBinding.list.setLayoutManager(
-                                new GridLayoutManager(getActivity().getApplicationContext(), 2));
+                        fragmentItemListBinding.list.setLayoutManager(gridLayoutManager);
                         fragmentItemListBinding.list.setAdapter(
                                 new RViewAdapter(movieDetailses, mListener));
                     }
@@ -207,8 +212,6 @@ public class MovieFragment extends Fragment {
             default:
                 break;
         }
-
-
         return fragmentItemListBinding.getRoot();
     }
 

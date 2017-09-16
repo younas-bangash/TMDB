@@ -28,7 +28,6 @@ public class RViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final OnMovieClickListner mListener;
     private FragmentItemBinding fragmentItemBinding;
 
-
     public RViewAdapter(List<MovieDetails> items, OnMovieClickListner listener) {
         movieDetails = items;
         mListener = listener;
@@ -71,6 +70,8 @@ public class RViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         });
     }
 
+
+
     @Override
     public int getItemCount() {
         return movieDetails.size();
@@ -79,15 +80,14 @@ public class RViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public MovieDetails mItem;
         public SimpleDraweeView simpleDraweeView;
-
         public ViewHolder(FragmentItemBinding binding) {
             super(binding.getRoot());
             fragmentItemBinding = binding;
             simpleDraweeView = fragmentItemBinding.posterImageView;
             binding.executePendingBindings();
         }
-
         public FragmentItemBinding getViewDataBinding() {
+
             return fragmentItemBinding;
         }
     }

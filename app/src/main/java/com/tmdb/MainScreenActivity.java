@@ -208,19 +208,19 @@ public class MainScreenActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id) {
             case R.id.popular:
-                PAGE_NUMBER = "0" ;
+                PAGE_NUMBER = 1 ;
                 updateFragment(POPULAR_MOVIE_QUERY);
                 break;
             case R.id.nowPlaying:
-                PAGE_NUMBER = "0" ;
+                PAGE_NUMBER = 1 ;
                 updateFragment(NOW_PLAYING_QUERY);
                 break;
             case R.id.top:
-                PAGE_NUMBER = "0" ;
+                PAGE_NUMBER = 1 ;
                 updateFragment(TOP_RATED_MOVIES);
                 break;
             case R.id.upcoming:
-                PAGE_NUMBER = "0" ;
+                PAGE_NUMBER = 1 ;
                 updateFragment(UP_COMING_MOVIES);
                 break;
             default:
