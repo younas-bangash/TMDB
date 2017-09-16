@@ -2,12 +2,14 @@ package com.tmdb.fragments;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tmdb.MainScreenActivity;
 import com.tmdb.R;
@@ -167,22 +169,40 @@ public class MovieFragment extends Fragment {
             case NOW_PLAYING_QUERY:
                 ((MainScreenActivity)getActivity()).getSupportActionBar()
                         .setTitle(getActivity().getString(R.string.now_playing_box_office));
-                getNowPlayingMovies();
+                if(isNetworkConnected())
+                    getNowPlayingMovies();
+                else
+                    Toast.makeText(getActivity(), "Internet Connection Required",
+                            Toast.LENGTH_SHORT).show();
                 break;
             case POPULAR_MOVIE_QUERY:
                 ((MainScreenActivity)getActivity()).getSupportActionBar()
                         .setTitle(getActivity().getString(R.string.popular_movies));
-                getPopluarMovies();
+                if(isNetworkConnected())
+                    getPopluarMovies();
+                else
+                    Toast.makeText(getActivity(), "Internet Connection Required",
+                            Toast.LENGTH_SHORT).show();
                 break;
             case TOP_RATED_MOVIES:
                 ((MainScreenActivity)getActivity()).getSupportActionBar()
                         .setTitle(getActivity().getString(R.string.top_movies));
-                getTopRatedMovies();
+                if(isNetworkConnected())
+                    getTopRatedMovies();
+                else
+                    Toast.makeText(getActivity(), "Internet Connection Required",
+                            Toast.LENGTH_SHORT).show();
+
                 break;
             case UP_COMING_MOVIES:
                 ((MainScreenActivity)getActivity()).getSupportActionBar()
                         .setTitle(getActivity().getString(R.string.upcoming_movies));
-                getUpComingMovies();
+                if(isNetworkConnected())
+                    getUpComingMovies();
+                else
+                    Toast.makeText(getActivity(), "Internet Connection Required",
+                            Toast.LENGTH_SHORT).show();
+
                 break;
             default:
                 break;
@@ -236,5 +256,11 @@ public class MovieFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
     }
 }
