@@ -3,6 +3,7 @@ package com.tmdb;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tmdb.databinding.ActivityMovieDetailBinding;
@@ -43,6 +44,15 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         getMovieFullDetails(movieID);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
 
     }
 

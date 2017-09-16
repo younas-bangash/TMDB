@@ -7,7 +7,8 @@ package com.tmdb.utils;
 public class Constant {
     public static final String API_KEY = "f7caf4a40a5accddacdad05cb1cdb792";
     public static final String LANGUAGE = "en-US";
-    public static final String PAGE_NUMBER = "1";
+    public static String PAGE_NUMBER = "1";
+    public static int SELECTED_QUERY = 100;
     public static final int NOW_PLAYING_QUERY = 100;
     public static final int POPULAR_MOVIE_QUERY = 200;
     public static final int TOP_RATED_MOVIES = 300;

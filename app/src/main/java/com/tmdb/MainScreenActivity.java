@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lapism.searchview.SearchAdapter;
 import com.lapism.searchview.SearchItem;
@@ -38,6 +37,7 @@ import static com.tmdb.utils.Constant.LANGUAGE;
 import static com.tmdb.utils.Constant.NOW_PLAYING_QUERY;
 import static com.tmdb.utils.Constant.PAGE_NUMBER;
 import static com.tmdb.utils.Constant.POPULAR_MOVIE_QUERY;
+import static com.tmdb.utils.Constant.SELECTED_QUERY;
 import static com.tmdb.utils.Constant.TOP_RATED_MOVIES;
 import static com.tmdb.utils.Constant.UP_COMING_MOVIES;
 
@@ -49,7 +49,6 @@ public class MainScreenActivity extends AppCompatActivity implements
     private List<SearchItem> qeryResult = new ArrayList<>();
     private List<MovieDetails> movieDetailsTemp = new ArrayList<>();
     private SearchAdapter searchAdapter = null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,13 +77,12 @@ public class MainScreenActivity extends AppCompatActivity implements
             public void onSearchItemClick(View view, int position) {
                 TextView textView = view.findViewById(R.id.search_text);
                 String query = textView.getText().toString();
-
                 appBarMainScreenBinding.searchView.close(false);
 
                 Intent intent = new Intent(MainScreenActivity.this, MovieDetailActivity.class);
-                intent.putExtra("posterLink", "");
+                intent.putExtra("posterLink", movieDetailsTemp.get(position).backdrop_path);
                 intent.putExtra("title", query);
-                intent.putExtra("id", "");
+                intent.putExtra("id", movieDetailsTemp.get(position).id);
                 startActivity(intent);
 
 
@@ -167,6 +165,7 @@ public class MainScreenActivity extends AppCompatActivity implements
     }
 
     private void updateFragment(int queryID) {
+        SELECTED_QUERY = queryID;
         MovieFragment searchingFragment = MovieFragment.newInstance(queryID);
         if (getSupportFragmentManager().findFragmentById(
                 contentMainScreenBinding.container.getId()) != null) {
@@ -209,15 +208,19 @@ public class MainScreenActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id) {
             case R.id.popular:
+                PAGE_NUMBER = "0" ;
                 updateFragment(POPULAR_MOVIE_QUERY);
                 break;
             case R.id.nowPlaying:
+                PAGE_NUMBER = "0" ;
                 updateFragment(NOW_PLAYING_QUERY);
                 break;
             case R.id.top:
+                PAGE_NUMBER = "0" ;
                 updateFragment(TOP_RATED_MOVIES);
                 break;
             case R.id.upcoming:
+                PAGE_NUMBER = "0" ;
                 updateFragment(UP_COMING_MOVIES);
                 break;
             default:
@@ -247,10 +250,4 @@ public class MainScreenActivity extends AppCompatActivity implements
         intent.putExtra("id", item.id);
         startActivity(intent);
     }
-
-    @Override
-    public void onLoadMoreClick() {
-        Toast.makeText(this, "onload more click", Toast.LENGTH_SHORT).show();
-    }
-
 }

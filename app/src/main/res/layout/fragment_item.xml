@@ -11,6 +11,12 @@
             xmlns:fresco="http://schemas.android.com/apk/res-auto"
             android:id="@+id/posterImageView"
             fresco:roundBottomRight="false"
+            fresco:roundingBorderColor="@color/colorPrimary"
+            fresco:roundBottomLeft="true"
+            fresco:roundingBorderWidth="2dp"
+            fresco:roundedCornerRadius="2dp"
+            fresco:roundTopLeft="true"
+            fresco:roundTopRight="true"
             android:layout_height="280dp"
             android:layout_width="185dp" />
 

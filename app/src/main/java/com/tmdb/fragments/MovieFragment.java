@@ -66,6 +66,7 @@ public class MovieFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         retrofit = new RetrofitBuilder(getActivity().getApplicationContext());
+        movieDetailses.clear();
         if (getArguments() != null) {
             movieQuery = getArguments().getInt("movieQuery");
         }
@@ -73,7 +74,7 @@ public class MovieFragment extends Fragment {
 
 
     private void getNowPlayingMovies() {
-        movieDetailses.clear();
+
         final RetrofitInterface service = retrofit.mApi;
         service.getNowPlayingMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())
@@ -101,7 +102,7 @@ public class MovieFragment extends Fragment {
     }
 
     private void getTopRatedMovies(){
-        movieDetailses.clear();
+
         final RetrofitInterface service = retrofit.mApi;
         service.getTopRatedMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())
@@ -129,7 +130,7 @@ public class MovieFragment extends Fragment {
     }
 
     private void getPopluarMovies() {
-        movieDetailses.clear();
+
         final RetrofitInterface service = retrofit.mApi;
         service.getPopluarMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
                 .subscribeOn(Schedulers.newThread())
@@ -192,7 +193,6 @@ public class MovieFragment extends Fragment {
     }
 
     private void getUpComingMovies() {
-        movieDetailses.clear();
 
         final RetrofitInterface service = retrofit.mApi;
         service.getUpcomingMovies(API_KEY,LANGUAGE,PAGE_NUMBER)
